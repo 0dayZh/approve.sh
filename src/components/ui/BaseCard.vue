@@ -18,8 +18,11 @@
     </div>
     <hr class="bottom-line" :style="lineStyle"/>
 
+    <!-- Custom buttom view -->
+    <div v-if="!!bottomView">
+    </div>
     <!-- Default warning view -->
-    <div v-if="usingDefautlBottomView" class="warning left-bottom-corner right-bottom-corner">
+    <div v-else class="warning bottom-size left-bottom-corner right-bottom-corner">
       <div class="row-center">
         <h1 class="box">WARNING!</h1>
         <div class="row-center">
@@ -28,17 +31,13 @@
       </div>
     </div>
 
-    <!-- Else custom view -->
-    <div v-else>
-    djdjdj
-    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'BaseCard',
-  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'tokenName', 'tokenSymbol', 'usingDefautlBottomView', 'buttonTitle'],
+  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'tokenName', 'tokenSymbol', 'bottomView', 'buttonTitle'],
   computed: {
     style() {
       return {
@@ -70,6 +69,7 @@ export default {
   width: 250px;
   height: 40px;
   object-fit: contain;
+  object-position: left;
 }
 .line {
   width: 100%;
@@ -130,10 +130,12 @@ button {
   vertical-align: middle;
 }
 .warning {
+  background-color: #E6DC24;
+}
+.bottom-size {
   display: block;
   height: 210px;
   margin: -7px -18px -5px -18px;
-  background-color: #E6DC24;
 }
 .left-bottom-corner {
   border-bottom-left-radius: 8px;

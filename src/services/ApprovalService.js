@@ -46,8 +46,6 @@ export async function fetchAccountApprovals(account) {
       }
     });
   });
-
-  console.log(approvals);
   
   return approvals;
 }

@@ -44,6 +44,8 @@ export default {
 
       ApprovalService.initService(web3);
       let approvals = await ApprovalService.fetchAccountApprovals(account);
+
+      console.log(approvals);
       
       this.$store.account.address = account;
       this.$store.web3 = web3;
