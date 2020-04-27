@@ -12,7 +12,8 @@
           v-bind:tokenName="approval.token.name"
           v-bind:tokenSymbol="approval.token.symbol"
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
-          buttonTitle="Edit"
+          v-bind:editing=false
+          v-bind:isWarning="isWarning"
           @buttonPressed="buttonPressed"
         ></BaseCard>
       </template>
@@ -25,7 +26,8 @@
           v-bind:tokenName="approval.token.name"
           v-bind:tokenSymbol="approval.token.symbol"
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
-          buttonTitle="Cancel"
+          v-bind:editing=true
+          v-bind:isWarning="isWarning"
           @buttonPressed="buttonPressed"
         ></BaseCard>
       </template>
@@ -57,10 +59,10 @@ export default {
       return this.approval.allowance == "115792089237316195423570985008687907853269984665640564039457584007913129639935";
     },
     backgroundColor() {
-      return this.isWarning ? "#E6DC244D" : "#E6DC244D";
+      return this.isWarning ? "#E6DC244D" : "white";
     },
     borderColor() {
-      return this.isWarning ? "#E6DC244D" : "#E6DC244D";
+      return this.isWarning ? "#E6DC244D" : "#D7D7D7";
     },
     usingDefautlBottomView() {
       return this.isWarning;

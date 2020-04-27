@@ -4,30 +4,47 @@
     <!-- platform logo -->
     <div class="align-left flex">
       <img class="platform-logo relative-position box" :src="require('@/assets/platform/' + platform + '.png')">
-      <button class="box" v-on:click="onClick">{{ buttonTitle }}</button>
+      <button class="edit-button box" v-on:click="onClick">{{ editing ? "Cancel" : "Edit" }}</button>
     </div>
     <hr class="line" :style="lineStyle"/>
 
     <!-- Allowance info -->
-    <div class="box">
+    <div v-if="editing">
+      <h2>Allowance</h2>
+      <input placeholder="2,000"/>
+      <div class="align-left">
+        <img class="token-logo box" :src="require('@/assets/token/' + tokenSymbol + '.png')">
+        <h3 class="box">{{ tokenName }}</h3>
+      </div>
+    </div>
+    <div v-else class="box">
       <h1>{{ allowance }}</h1>
       <div class="align-left">
         <img class="token-logo box" :src="require('@/assets/token/' + tokenSymbol + '.png')">
         <h3 class="box">{{ tokenName }}</h3>
       </div>
     </div>
-    <hr class="bottom-line" :style="lineStyle"/>
 
-    <!-- Custom buttom view -->
-    <div v-if="!!bottomView">
-    </div>
-    <!-- Default warning view -->
-    <div v-else class="warning bottom-size left-bottom-corner right-bottom-corner">
-      <div class="row-center">
-        <h1 class="box">WARNING!</h1>
+    <div class="bottom">
+      <hr class="bottom-line" :style="lineStyle"/>
+
+      <!-- Custom buttom view -->
+      <div v-if="editing" class="bottom-size left-bottom-corner right-bottom-corner">
         <div class="row-center">
-          <h2 class="white black-background row-center">OUT OF CONTROL</h2>
+          <button class="done-button box">Done</button>
+          <button class="decline-button box">Decline</button>
         </div>
+      </div>
+      <!-- Show warning view -->
+      <div v-else-if="isWarning" class="warning bottom-size left-bottom-corner right-bottom-corner">
+        <div class="row-center">
+          <h1 class="box">WARNING!</h1>
+          <div class="row-center">
+            <h2 class="white black-background row-center">UNLIMITED</h2>
+          </div>
+        </div>
+      </div>
+      <div v-else class="bottom-size left-bottom-corner right-bottom-corner">
       </div>
     </div>
 
@@ -37,7 +54,7 @@
 <script>
 export default {
   name: 'BaseCard',
-  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'tokenName', 'tokenSymbol', 'bottomView', 'buttonTitle'],
+  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'tokenName', 'tokenSymbol', 'editing', 'isWarning'],
   computed: {
     style() {
       return {
@@ -77,11 +94,17 @@ export default {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+.bottom {
+  position: absolute;
+  vertical-align: bottom;
+  bottom: 0px;
+  width: 300px;
+}
 .bottom-line {
   width: auto;
   margin-left: -18px;
   margin-right: -18px;
-  margin-top: 15px;
+  margin-bottom: 0px;
 }
 .relative-position {
   position: relative;
@@ -100,7 +123,7 @@ export default {
 h1 {
   margin-bottom:10px;
 }
-button {
+.edit-button {
   border: none;
   position: absolute; 
   right: 0;
@@ -114,6 +137,46 @@ button {
   font-variant: normal;
   font-weight: 500;
   line-height: 21px;
+}
+.done-button {
+  border: 1px solid #E732D7;
+  border-radius: 4px;
+  background-color: #E732D7CC;
+  width: 270px;
+  height: 50px;
+  color: white;
+  font-family: "Helvetica Neue", "sans serif";
+  font-size: 21px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 700;
+  line-height: 21px;
+  margin-top: 35px;
+}
+.decline-button {
+  border: 2px solid #D44545;
+  border-radius: 4px;
+  background-color: #FFFFFFCC;
+  width: 270px;
+  height: 50px;
+  color: #D44545;
+  font-family: "Helvetica Neue", "sans serif";
+  font-size: 21px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 700;
+  line-height: 21px;
+  margin-top: 30px;
+}
+input {
+  outline-style: none;
+  border: 1px solid #E2E2E2; 
+  border-radius: 4px;
+  padding: 13px 14px;
+  width: 270px;
+  font-weight: 700;
+  font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", "sans serif";
+  font-size: 24px;
 }
 .align-left {
   text-align: left;
@@ -135,7 +198,9 @@ button {
 .bottom-size {
   display: block;
   height: 210px;
-  margin: -7px -18px -5px -18px;
+  margin-left: -18px;
+  margin-right: -18px;
+  margin-bottom: 0px;
 }
 .left-bottom-corner {
   border-bottom-left-radius: 8px;
