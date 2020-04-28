@@ -3,13 +3,20 @@
     <div class="header">
       <h1 class="header">Approve<span class="tint-color">.</span>sh</h1>
     </div>
-    <RotateSquare v-if="this.$store.approvals.length == 0" 
-      class="approvals" 
-    />
-    <Approvals v-else
-      class="approvals"
-      :approvals="this.$store.approvals"
-    />
+
+    <div v-if="hasAccount" class="approvals">
+      <div v-if="this.$store.approvals.length == 0" class="approvals-loading">
+        <RotateSquare background="#EB39DC"/>
+      </div>
+      <Approvals v-else
+        class="approvals"
+        :approvals="this.$store.approvals"
+      />
+    </div>
+    <div v-else>
+      
+    </div>
+    
     <Account class="account"
       :address="this.$store.account.address"
     />
@@ -17,7 +24,7 @@
     </div>
     <div class="footer">
       <div class="footer-container">
-        <h2 class="footer-content">🌛</h2>
+        <img class="footer-content" src="@/assets/github.png"></img>
       </div>
     </div>
     <vue-metamask 
@@ -33,7 +40,7 @@ import Account from './pages/Account.vue';
 import VueMetamask from 'vue-metamask';
 import * as ApprovalService from '@/services/ApprovalService.js';
 import Web3 from 'web3';
-import RotateSquare from 'vue-loading-spinner/components/RotateSquare';
+import { RotateSquare } from 'vue-loading-spinner';
 
 export default {
   name: 'App',
@@ -43,10 +50,13 @@ export default {
     VueMetamask,
     RotateSquare
   },
+  computed: {
+    hasAccount() {
+      return !!this.$store.account.address.length;
+    }
+  },
   methods: {
     async onMetaMaskLoadComplete(data) {
-      console.log("Begin: onMetaMaskLoadComplete");
-      
       let account = data.metaMaskAddress;
       let web3 = new Web3(data.web3.currentProvider);
 
@@ -57,8 +67,6 @@ export default {
       let approvals = await ApprovalService.fetchAccountApprovals(account);
 
       this.$store.approvals = approvals;
-
-      console.log("End: onMetaMaskLoadComplete");
     },
   }
 }
@@ -119,9 +127,9 @@ h3 {
   margin-top: 100px;
   display: inline-block;
   vertical-align: bottom;
-  font-weight: bolder;
-  font-size: 18px;
-  line-height: 18px;
+  widows: 30px;
+  height: 30px;
+  filter: invert(42%) sepia(6%) saturate(63%) hue-rotate(71deg) brightness(91%) contrast(86%);
 }
 .grid-container {
   display: grid;
@@ -133,5 +141,12 @@ h3 {
     '. approvals . notification .'
     '. footer footer footer .';
   grid-gap: 10px;
+}
+
+.approvals-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 </style>

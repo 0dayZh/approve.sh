@@ -4,7 +4,7 @@
     <div class="cards">
       <ApprovalCard
         v-for="approval in approvals"
-        v-bind:key="approval.hash"
+        v-bind:key="approval.key"
         v-bind:approval="approval"
       ></ApprovalCard>
     </div>
