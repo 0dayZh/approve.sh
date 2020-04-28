@@ -3,7 +3,11 @@
     <div class="header">
       <h1 class="header">Approve<span class="tint-color">.</span>sh</h1>
     </div>
-    <Approvals class="approvals"
+    <RotateSquare v-if="this.$store.approvals.length == 0" 
+      class="approvals" 
+    />
+    <Approvals v-else
+      class="approvals"
       :approvals="this.$store.approvals"
     />
     <Account class="account"
@@ -28,14 +32,16 @@ import Approvals from './pages/Approvals.vue';
 import Account from './pages/Account.vue';
 import VueMetamask from 'vue-metamask';
 import * as ApprovalService from '@/services/ApprovalService.js';
-import Web3 from 'web3'
+import Web3 from 'web3';
+import RotateSquare from 'vue-loading-spinner/components/RotateSquare';
 
 export default {
   name: 'App',
   components: {
     Approvals,
     Account,
-    VueMetamask
+    VueMetamask,
+    RotateSquare
   },
   methods: {
     async onMetaMaskLoadComplete(data) {
