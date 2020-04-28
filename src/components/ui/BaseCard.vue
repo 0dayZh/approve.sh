@@ -1,14 +1,15 @@
 <template>
   <div class="container corners card-size relative-position" :style="style">
 
-    <!-- platform logo -->
+    <!-- Header: Platform logo -->
     <div class="align-left flex">
       <img class="platform-logo relative-position box" :src="require('@/assets/platform/' + platform + '.png')">
       <button class="edit-button box" v-on:click="editButtonPressed">{{ editing ? "Cancel" : "Edit" }}</button>
     </div>
     <hr class="line" :style="lineStyle"/>
 
-    <!-- Allowance info -->
+    <!-- Middle Section: -->
+    <!-- Allowance edit -->
     <div v-if="editing">
       <h2>Allowance</h2>
       <input type="number" :placeholder="placeholder" v-model="newAllowance"/>
@@ -17,6 +18,8 @@
         <h3 class="box">{{ tokenName }}</h3>
       </div>
     </div>
+
+    <!-- Allowance info -->
     <div v-else class="box">
       <h1>{{ allowance }}</h1>
       <div class="align-left">
@@ -25,18 +28,21 @@
       </div>
     </div>
 
+
+    <!-- Bottom Section: -->
     <div class="bottom">
       <hr class="bottom-line" :style="lineStyle"/>
 
-      <!-- Custom buttom view -->
-      <div v-if="editing" class="bottom-size left-bottom-corner right-bottom-corner">
+      <!-- Action buttom view -->
+      <div v-if="editing" class="bottom-size bottom-margin left-bottom-corner right-bottom-corner">
         <div class="row-center">
           <button class="done-button box" v-on:click="doneButtonPressed">Done</button>
           <button class="decline-button box" v-on:click="declineButtonPressed">Decline</button>
         </div>
       </div>
-      <!-- Show warning view -->
-      <div v-else-if="isWarning" class="warning bottom-size left-bottom-corner right-bottom-corner">
+
+      <!-- Warning view -->
+      <div v-else-if="isWarning" class="warning bottom-size bottom-margin left-bottom-corner right-bottom-corner">
         <div class="row-center">
           <h1 class="box">WARNING!</h1>
           <div class="row-center">
@@ -44,8 +50,13 @@
           </div>
         </div>
       </div>
-      <div v-else class="bottom-size left-bottom-corner right-bottom-corner">
-        
+
+      <!-- Info view -->
+      <div v-else class="bottom-size info-margin left-bottom-corner right-bottom-corner">
+        <div class="box">
+          <h1>{{ percent }} %</h1>
+          <h3>Balance ～ {{ balance }} {{ tokenName }}</h3>
+        </div>
       </div>
     </div>
 
@@ -55,7 +66,7 @@
 <script>
 export default {
   name: 'BaseCard',
-  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'tokenName', 'tokenSymbol', 'editing', 'isWarning', 'placeholder'],
+  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'percent', 'balance', 'tokenName', 'tokenSymbol', 'editing', 'isWarning', 'placeholder'],
   computed: {
     style() {
       return {
@@ -211,6 +222,13 @@ input {
 .bottom-size {
   display: block;
   height: 210px;
+}
+.info-margin {
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+.bottom-margin {
   margin-left: -18px;
   margin-right: -18px;
   margin-bottom: 0px;

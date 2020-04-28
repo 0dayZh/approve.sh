@@ -103,7 +103,7 @@ export function isApprovalInDanger(approval) {
   return approval.allowance.gte(MAX_ALLOWANCE);
 }
 
-export function dispalyAllownace(approval) {
+export function displayAllownace(approval) {
   if (isApprovalInDanger(approval)) {
     return "∞";
   } else {

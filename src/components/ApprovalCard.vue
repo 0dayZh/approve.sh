@@ -8,13 +8,15 @@
           v-bind:backgroundColor="backgroundColor"
           v-bind:borderColor="borderColor"
           v-bind:platform="approval.platform.logo"
-          v-bind:allowance="dispalyAllownace"
+          v-bind:allowance="displayAllownace"
+          v-bind:balance="displayBalance"
+          v-bind:percent="percent"
           v-bind:tokenName="approval.token.name"
           v-bind:tokenSymbol="approval.token.symbol"
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
           v-bind:editing=false
           v-bind:isWarning="isWarning"
-          v-bind:placeholder="dispalyAllownace"
+          v-bind:placeholder="displayAllownace"
           @editButtonPressed="editButtonPressed"
         ></BaseCard>
       </template>
@@ -23,13 +25,15 @@
           v-bind:backgroundColor="backgroundColor"
           v-bind:borderColor="borderColor"
           v-bind:platform="approval.platform.logo"
-          v-bind:allowance="dispalyAllownace"
+          v-bind:allowance="displayAllownace"
+          v-bind:balance="displayBalance"
+          v-bind:percent="percent"
           v-bind:tokenName="approval.token.name"
           v-bind:tokenSymbol="approval.token.symbol"
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
           v-bind:editing=true
           v-bind:isWarning="isWarning"
-          v-bind:placeholder="dispalyAllownace"
+          v-bind:placeholder="displayAllownace"
           @editButtonPressed="editButtonPressed"
           @doneButtonPressed="doneButtonPressed"
           @declineButtonPressed="declineButtonPressed"
@@ -71,8 +75,15 @@ export default {
     usingDefautlBottomView() {
       return this.isWarning;
     },
-    dispalyAllownace() {
-      return ApprovalService.dispalyAllownace(this.approval);
+    displayAllownace() {
+      return ApprovalService.displayAllownace(this.approval);
+    },
+    displayBalance() {
+      return ApprovalService.displayBalance(this.approval);
+    },
+    percent() {
+      let percentNumber = this.approval.balance.div(this.approval.allowance);
+      return percentNumber.toFixed(2).toString();
     }
   },
   methods: {
