@@ -24,7 +24,9 @@
     </div>
     <div class="footer">
       <div class="footer-container">
-        <img class="footer-content" src="@/assets/github.png"></img>
+        <a href="https://github.com/0dayZh/approve.sh" target="_blank">
+          <img class="footer-content" src="@/assets/github.png"/>
+        </a>
       </div>
     </div>
     <vue-metamask 
