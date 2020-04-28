@@ -4,14 +4,14 @@
     <!-- platform logo -->
     <div class="align-left flex">
       <img class="platform-logo relative-position box" :src="require('@/assets/platform/' + platform + '.png')">
-      <button class="edit-button box" v-on:click="onClick">{{ editing ? "Cancel" : "Edit" }}</button>
+      <button class="edit-button box" v-on:click="editButtonPressed">{{ editing ? "Cancel" : "Edit" }}</button>
     </div>
     <hr class="line" :style="lineStyle"/>
 
     <!-- Allowance info -->
     <div v-if="editing">
       <h2>Allowance</h2>
-      <input placeholder="2,000"/>
+      <input type="number" :placeholder="placeholder" v-model="newAllowance"/>
       <div class="align-left">
         <img class="token-logo box" :src="require('@/assets/token/' + tokenSymbol + '.png')">
         <h3 class="box">{{ tokenName }}</h3>
@@ -31,8 +31,8 @@
       <!-- Custom buttom view -->
       <div v-if="editing" class="bottom-size left-bottom-corner right-bottom-corner">
         <div class="row-center">
-          <button class="done-button box">Done</button>
-          <button class="decline-button box">Decline</button>
+          <button class="done-button box" v-on:click="doneButtonPressed">Done</button>
+          <button class="decline-button box" v-on:click="declineButtonPressed">Decline</button>
         </div>
       </div>
       <!-- Show warning view -->
@@ -45,6 +45,7 @@
         </div>
       </div>
       <div v-else class="bottom-size left-bottom-corner right-bottom-corner">
+        
       </div>
     </div>
 
@@ -54,7 +55,7 @@
 <script>
 export default {
   name: 'BaseCard',
-  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'tokenName', 'tokenSymbol', 'editing', 'isWarning'],
+  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'tokenName', 'tokenSymbol', 'editing', 'isWarning', 'placeholder'],
   computed: {
     style() {
       return {
@@ -68,10 +69,21 @@ export default {
       };
     }
   },
-  methods: {
-    onClick() {
-      this.$emit('buttonPressed');
+  data: function() {
+    return {
+      newAllowance : ""
     }
+  },
+  methods: {
+    editButtonPressed() {
+      this.$emit('editButtonPressed');
+    },
+    doneButtonPressed() {
+      this.$emit('doneButtonPressed', this.newAllowance);
+    },
+    declineButtonPressed() {
+      this.$emit('declineButtonPressed');
+    },
   }
 }
 </script>
@@ -156,7 +168,7 @@ h1 {
 .decline-button {
   border: 2px solid #D44545;
   border-radius: 4px;
-  background-color: #FFFFFFCC;
+  background-color: #FFFFFFBB;
   width: 270px;
   height: 50px;
   color: #D44545;
@@ -172,6 +184,7 @@ input {
   outline-style: none;
   border: 1px solid #E2E2E2; 
   border-radius: 4px;
+  background-color: #FFFFFFBB;
   padding: 13px 14px;
   width: 270px;
   font-weight: 700;

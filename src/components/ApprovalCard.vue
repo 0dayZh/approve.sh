@@ -8,13 +8,14 @@
           v-bind:backgroundColor="backgroundColor"
           v-bind:borderColor="borderColor"
           v-bind:platform="approval.platform.logo"
-          v-bind:allowance="isWarning ? '∞' : approval.allowance"
+          v-bind:allowance="dispalyAllownace"
           v-bind:tokenName="approval.token.name"
           v-bind:tokenSymbol="approval.token.symbol"
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
           v-bind:editing=false
           v-bind:isWarning="isWarning"
-          @buttonPressed="buttonPressed"
+          v-bind:placeholder="dispalyAllownace"
+          @editButtonPressed="editButtonPressed"
         ></BaseCard>
       </template>
       <template  slot="back">
@@ -22,13 +23,16 @@
           v-bind:backgroundColor="backgroundColor"
           v-bind:borderColor="borderColor"
           v-bind:platform="approval.platform.logo"
-          v-bind:allowance="approval.allowance"
+          v-bind:allowance="dispalyAllownace"
           v-bind:tokenName="approval.token.name"
           v-bind:tokenSymbol="approval.token.symbol"
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
           v-bind:editing=true
           v-bind:isWarning="isWarning"
-          @buttonPressed="buttonPressed"
+          v-bind:placeholder="dispalyAllownace"
+          @editButtonPressed="editButtonPressed"
+          @doneButtonPressed="doneButtonPressed"
+          @declineButtonPressed="declineButtonPressed"
         ></BaseCard>
       </template>
     </FlipCard>
@@ -38,6 +42,8 @@
 <script>
 import BaseCard from '@/components/ui/BaseCard.vue'
 import FlipCard from '@/components/ui/FlipCard.vue'
+import * as ApprovalService from '@/services/ApprovalService.js'
+import Big from 'big.js';
 
 export default {
   name: 'ApprovalCard',
@@ -54,9 +60,7 @@ export default {
   },
   computed: {
     isWarning() {
-      console.log(this.approval.allowance);
-      
-      return this.approval.allowance == "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+      return this.approval.allowance.eq(ApprovalService.UNLIMITED_ALLOWANCE);
     },
     backgroundColor() {
       return this.isWarning ? "#E6DC244D" : "white";
@@ -66,11 +70,23 @@ export default {
     },
     usingDefautlBottomView() {
       return this.isWarning;
+    },
+    dispalyAllownace() {
+      return ApprovalService.dispalyAllownace(this.approval);
     }
   },
   methods: {
-    buttonPressed: function() {
+    editButtonPressed: function() {
       this.flipped = !this.flipped;
+    },
+    doneButtonPressed: async function(newAllowance) {
+      let allowance = new Big(newAllowance);
+      let scaledAllowance = allowance.times(new Big(`1e${this.approval.token.decimals}`));
+
+      await ApprovalService.updateApproval(this.approval, scaledAllowance);
+    },
+    declineButtonPressed: async function() {
+      await ApprovalService.updateApproval(this.approval, new Big(0));
     }
   }
 }

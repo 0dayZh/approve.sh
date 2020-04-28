@@ -8,9 +8,9 @@ Vue.config.productionTip = false
  */
 const shared = Vue.observable({
   account: {
-    address: String,
-    approvals: []
+    address: "",
   },
+  approvals: [],
   web3: null
 })
 

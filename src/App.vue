@@ -39,17 +39,20 @@ export default {
   },
   methods: {
     async onMetaMaskLoadComplete(data) {
+      console.log("Begin: onMetaMaskLoadComplete");
+      
       let account = data.metaMaskAddress;
       let web3 = new Web3(data.web3.currentProvider);
+
+      this.$store.web3 = web3;
+      this.$store.account.address = account;
 
       ApprovalService.initService(web3);
       let approvals = await ApprovalService.fetchAccountApprovals(account);
 
-      console.log(approvals);
-      
-      this.$store.account.address = account;
-      this.$store.web3 = web3;
       this.$store.approvals = approvals;
+
+      console.log("End: onMetaMaskLoadComplete");
     },
   }
 }
@@ -124,6 +127,5 @@ h3 {
     '. approvals . notification .'
     '. footer footer footer .';
   grid-gap: 10px;
-
 }
 </style>
