@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     isWarning() {
-      return this.approval.allowance.eq(ApprovalService.UNLIMITED_ALLOWANCE);
+      return ApprovalService.isApprovalInDanger(this.approval);
     },
     backgroundColor() {
       return this.isWarning ? "#E6DC244D" : "white";

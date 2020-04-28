@@ -7,6 +7,7 @@ import Big from 'big.js';
 
 var web3 = null;
 export const UNLIMITED_ALLOWANCE = new Big("115792089237316195423570985008687907853269984665640564039457584007913129639935");
+export const MAX_ALLOWANCE = UNLIMITED_ALLOWANCE.div('1e10');
 
 /**
  * @typedef Approval
@@ -33,6 +34,7 @@ export async function fetchAccountApprovals(account) {
   for (let i = 0; i < tokens.length; i++) {
     let token = tokens[i];
 
+    // TODO need a faster way to get token balance and approval info
     let ERC20token = new web3.eth.Contract(require(`@/abi/ERC20.json`), token.address);
     let balance = await getTokenBalance(ERC20token, account);
 
@@ -97,8 +99,12 @@ export function fetchAllPlatforms() {
   return PlatformService.patforms;
 }
 
+export function isApprovalInDanger(approval) {
+  return approval.allowance.gte(MAX_ALLOWANCE);
+}
+
 export function dispalyAllownace(approval) {
-  if (approval.allowance.eq(UNLIMITED_ALLOWANCE)) {
+  if (isApprovalInDanger(approval)) {
     return "∞";
   } else {
     let allowance = new Big(approval.allowance);
