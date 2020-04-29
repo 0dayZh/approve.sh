@@ -56,13 +56,12 @@ export default {
     FlipCard,
   },
   props: {
-    'approval': {},
-    'flipped': {
-      type: Boolean,
-      default: false
-    }
+    'approval': {}
   },
   computed: {
+    isWaiting() {
+      return this.txHash.length != 0;
+    },
     isWarning() {
       return ApprovalService.isApprovalInDanger(this.approval);
     },
@@ -94,11 +93,24 @@ export default {
       let allowance = new Big(newAllowance);
       let scaledAllowance = allowance.times(new Big(`1e${this.approval.token.decimals}`));
 
-      await ApprovalService.updateApproval(this.approval, scaledAllowance);
+      this.txHash = await ApprovalService.updateApproval(this.approval, scaledAllowance, this.txCompleted);
     },
     declineButtonPressed: async function() {
-      await ApprovalService.updateApproval(this.approval, new Big(0));
+      this.txHash = await ApprovalService.updateApproval(this.approval, new Big(0), this.txCompleted);
+    },
+    txCompleted: function(txHash) {
+      if (this.txHash == txHash) {
+        this.txHash = "";
+      } else {
+        console.log("Unhanded: ", txHash);
+      }
     }
+  },
+  data: function() {
+    return {
+      txHash: "",
+      flipped: false
+    };
   }
 }
 </script>

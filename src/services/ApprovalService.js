@@ -7,7 +7,9 @@ import Big from 'big.js';
 import * as QueueService from './QueueService.js';
 import * as Web3Runloop from './Web3Runloop.js';
 
-var web3 = null;
+let web3 = null;
+let callbackFns = {};
+
 export const UNLIMITED_ALLOWANCE = new Big("115792089237316195423570985008687907853269984665640564039457584007913129639935");
 export const MAX_ALLOWANCE = UNLIMITED_ALLOWANCE.div('1e10');
 
@@ -23,15 +25,16 @@ export const MAX_ALLOWANCE = UNLIMITED_ALLOWANCE.div('1e10');
 
 export function initService(web3Instance) {
   web3 = web3Instance;
-  Web3Runloop.initService(web3Instance);
+  Web3Runloop.initService(web3Instance, runloopCallback);
+}
+
+function runloopCallback(txHash) {
+  callbackFns[txHash](txHash);
 }
 
 const Task = (token, owner, platform, tokenInfo) => getApproval(token, owner, platform, tokenInfo);
 
 export async function fetchAccountApprovals(account) {
-  
-  Web3Runloop.start(account);
-
   const tokens =  TokenService.tokens;
   const platforms = PlatformService.platforms;
 
@@ -127,14 +130,18 @@ export function displayBalance(approval) {
   return balance.toFixed().toString();
 }
 
-export async function updateApproval(approval, newAllowance) {
+export async function updateApproval(approval, newAllowance, callback) {
   let ERC20token = new web3.eth.Contract(require(`@/abi/ERC20.json`), approval.token.address);
   let spender = approval.platform.address;
   let amount = newAllowance.toString();
 
   try {
-    let result = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
-    return result;
+    let txHash = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
+
+    callbackFns[txHash] = callback;
+    Web3Runloop.watchTx(txHash);
+
+    return txHash;
   } catch (error) {
     throw new Error(error.message);
   }

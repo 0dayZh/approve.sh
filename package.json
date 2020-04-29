@@ -10,6 +10,7 @@
   "dependencies": {
     "big.js": "^5.2.2",
     "core-js": "^3.6.4",
+    "ethereum-input-data-decoder": "^0.3.0",
     "object-hash": "^2.0.3",
     "vue": "^2.6.11",
     "vue-loading-spinner": "^1.0.11",

@@ -2,26 +2,66 @@
 
 let context = {
   web3: {},
+  isRunning: false,
   interval: {},
-  account: ""
+  account: "",
+  watchList: [],
+  callback: () => {}
 };
 
 
-export function initService(web3) {
+export function initService(web3, callback) {
   context.web3 = web3;
+  context.callback = callback;
 }
 
-async function callback() {
-  let pendingTransactions = await context.web3.eth.getTransaction("0x63d1b0da79e0e5452bf779622e09925ced9f57fd4feaa326c8a6fc96921e4054");
-  console.log(pendingTransactions);
-  stop();
+export function watchTx(txHash) {
+  context.watchList.push(txHash);
+
+  if (context.watchList.length > 0 && !context.isRunning) {
+    start();
+  }
+}
+
+async function runloop() {
+  try {
+    let toBeRemoved = [];
+    for (let i = 0; i < context.watchList.length; i++) {
+      const txHash = context.watchList[i];
+      const tx = await context.web3.eth.getTransaction(txHash);
+      if (tx.blockNumber != null) {
+        toBeRemoved.push(txHash);
+        context.callback(txHash);
+      }
+    }
+
+    if (toBeRemoved.length > 0) {
+      context.watchList = context.watchList.filter((e) => {
+        return toBeRemoved.indexOf(e) >= 0;
+      });
+    }
+
+    if (context.watchList.length == 0) {
+      stop();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export function start(account) {
+  context.isRunning = true;
   context.account = account;
-  context.interval = setInterval(callback, 5000);
+
+  if (context.isRunning) {
+    stop();
+  }
+  
+  runloop();
+  context.interval = setInterval(runloop, 10000);
 }
 
 export function stop() {
   clearInterval(context.interval);
+  context.isRunning = false;
 }
