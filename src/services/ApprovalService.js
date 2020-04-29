@@ -148,3 +148,14 @@ export async function updateApproval(approval, newAllowance, callback) {
     throw new Error(error.message);
   }
 }
+
+export function numberOfPlatforms(approvals) {
+  let platforms = [];
+  for (let approval of approvals) {
+    if (platforms.map(function(e){ return e.address; }).indexOf(approval.platform.address) < 0) {
+      platforms.push(approval.platform);
+    }
+  }
+
+  return platforms.length;
+}

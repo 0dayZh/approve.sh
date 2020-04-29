@@ -1,19 +1,7 @@
 <template>
   <div class="align-left">
-    <h2>ACCOUNT</h2>
-    <div class="card-container corners card-size relative-position border">
-      <h3 v-if="0 != address.length">{{ displayAddress }}</h3>
-      <h3 v-else>Need to connect to MetaMask</h3>
-      <hr class="line border"/>
-      <div class="align-left">
-        <h2 class="box">{{ approvalCount }}</h2>
-        <p class="box">approvals</p>
-      </div>
-      <div class="align-left">
-        <h2 class="box">{{ platformCount }}</h2>
-        <p class="box">platforms</p>
-      </div>
-    </div>
+    <h2>NOTIFICATIONS</h2>
+    <flash-message class="notification-container"></flash-message>
   </div>
 </template>
 
@@ -21,13 +9,7 @@
 import { truncate } from '@/utils/StringHelper.js';
 
 export default {
-  name: 'Account',
-  props: ['address', 'approvalCount', 'platformCount'],
-  computed: {
-    displayAddress: function() {
-      return truncate(this.address, 13, 12, 3);
-    }
-  }
+  name: 'Notifications',
 }
 </script>
 
@@ -35,6 +17,9 @@ export default {
 <style scoped>
 .align-left {
   text-align: left;
+}
+.notification-container {
+  width: 336px;
 }
 .card-container {
   padding: 18px;

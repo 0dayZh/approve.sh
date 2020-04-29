@@ -87,15 +87,26 @@ export default {
   },
   methods: {
     editButtonPressed: function() {
+      this.flash('Edit button pressed.', 'info', {
+        timeout: 3000
+      });
       this.flipped = !this.flipped;
     },
     doneButtonPressed: async function(newAllowance) {
+      this.flash('Done button pressed.', 'info', {
+        timeout: 3000
+      });
+
       let allowance = new Big(newAllowance);
       let scaledAllowance = allowance.times(new Big(`1e${this.approval.token.decimals}`));
 
       this.txHash = await ApprovalService.updateApproval(this.approval, scaledAllowance, this.txCompleted);
     },
     declineButtonPressed: async function() {
+      this.flash('decline button pressed.', 'info', {
+        timeout: 3000
+      });
+
       this.txHash = await ApprovalService.updateApproval(this.approval, new Big(0), this.txCompleted);
     },
     txCompleted: function(txHash) {

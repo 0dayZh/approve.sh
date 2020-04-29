@@ -19,9 +19,10 @@
     
     <Account class="account"
       :address="this.$store.account.address"
+      :approvalCount="approvalCount"
+      :platformCount="platformCount"
     />
-    <div class="notification">
-    </div>
+    <Notifications class="notification"/>
     <div class="footer">
       <div class="footer-container">
         <a href="https://github.com/0dayZh/approve.sh" target="_blank">
@@ -37,24 +38,33 @@
 </template>
 
 <script>
-import Approvals from './pages/Approvals.vue';
-import Account from './pages/Account.vue';
+import Approvals from '@/pages/Approvals.vue';
+import Account from '@/pages/Account.vue';
+import Notifications from '@/pages/Notifications.vue';
 import VueMetamask from 'vue-metamask';
 import * as ApprovalService from '@/services/ApprovalService.js';
 import Web3 from 'web3';
 import { RotateSquare } from 'vue-loading-spinner';
+require('vue-flash-message/dist/vue-flash-message.min.css');
 
 export default {
   name: 'App',
   components: {
     Approvals,
     Account,
+    Notifications,
     VueMetamask,
     RotateSquare
   },
   computed: {
     hasAccount() {
       return !!this.$store.account.address.length;
+    }
+  },
+  data: function() {
+    return {
+      approvalCount: 0,
+      platformCount: 0
     }
   },
   methods: {
@@ -68,8 +78,33 @@ export default {
       ApprovalService.initService(web3);
       let approvals = await ApprovalService.fetchAccountApprovals(account);
 
+      let dangerCount = 0;
+      for (let approval of approvals) {
+        console.log(approvals);
+        
+        if (ApprovalService.isApprovalInDanger(approval)) {
+          dangerCount++;
+        }
+      }
+      if (dangerCount > 0) {
+        if (1 == dangerCount) {
+          this.flash(`🔥<span class='approve-font'>WARNING</span>🔥<br/>There is ${dangerCount} approval having unlimited allownace.`, 'warning');
+        } else {
+          this.flash(`🔥<span class='approve-font'>WARNING</span>🔥<br/>There are ${dangerCount} approvals having unlimited allownace.`, 'warning');
+        }
+      }
+      
+      this.approvalCount = approvals.length;
+      this.platformCount = ApprovalService.numberOfPlatforms(approvals);
       this.$store.approvals = approvals;
     },
+  },
+  mounted() {
+    this.flash("<span class='approve-font'>Welcome to Approve<span class='tint-color'>.</span>sh</span>. 🎉<br/>\
+              Learn more about <a href='https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md#approve' target='_blank'>ERC20 approve</a>,<br/>\
+              and the <a href='https://www.coindesk.com/long-festering-defi-dapp-bug-still-not-fixed-by-industry' target='_blank'>Open Security Issue</a>.", 'info', {
+        important: true
+      });
   }
 }
 </script>
@@ -109,6 +144,12 @@ h3 {
   line-height: 21px;
   color: #737372;
 }
+a {
+  color: #EB39DC;
+}
+.approve-font {
+  font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", "sans serif";
+}
 .tint-color {
   color: #EB39DC;
 }
@@ -136,7 +177,7 @@ h3 {
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 670px 60px 300px 1fr;
-  grid-template-rows: 100px 1fr 1fr 200px;
+  grid-template-rows: 100px 310px 1fr 200px;
   grid-template-areas:
     '. header header header .'
     '. approvals . account .'
