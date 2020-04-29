@@ -1,5 +1,7 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import App from './App.vue';
+import VueFlashMessage from 'vue-flash-message';
+
 
 Vue.config.productionTip = false
 
@@ -21,6 +23,7 @@ shared.install = function(){
 }
 
 Vue.use(shared);
+Vue.use(VueFlashMessage);
 
 /**
  * Mount App
