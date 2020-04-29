@@ -28,7 +28,7 @@ export function initService(web3Instance) {
   Web3Runloop.initService(web3Instance, runloopCallback);
 }
 
-function runloopCallback(txHash) {
+async function runloopCallback(txHash) {
   callbackFns[txHash](txHash);
 }
 
@@ -77,7 +77,7 @@ export async function getApproval(token, owner, platformInfo, tokenInfo) {
       
       return approval;
     } else {
-      throw new Error("No approval");
+      return null;
     }
   } catch (error) {
     throw new Error(error.message);
@@ -136,14 +136,15 @@ export async function updateApproval(approval, newAllowance, callback) {
   let amount = newAllowance.toString();
 
   try {
-    let txHash = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
+    let tx = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
+    const transactionHash = tx.transactionHash;
+    console.log("tx: ", transactionHash);
 
-    callbackFns[txHash] = callback;
-    Web3Runloop.watchTx(txHash);
+    callbackFns[transactionHash] = callback;
+    Web3Runloop.watchTx(transactionHash);
 
-    return txHash;
+    return transactionHash;
   } catch (error) {
     throw new Error(error.message);
   }
 }
-

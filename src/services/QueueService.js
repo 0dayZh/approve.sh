@@ -8,7 +8,7 @@ export function run(tasks, maxNumOfWorkers = 4) {
     var results = [];
     
     const handleResult = (index, success) => result => {
-      if (success) {
+      if (success && result) {
         results.push(result);
       }
       tasks[index] = result;

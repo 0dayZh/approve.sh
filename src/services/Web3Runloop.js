@@ -16,6 +16,8 @@ export function initService(web3, callback) {
 }
 
 export function watchTx(txHash) {
+  console.log("start watch tx: ", txHash);
+  
   context.watchList.push(txHash);
 
   if (context.watchList.length > 0 && !context.isRunning) {
@@ -24,44 +26,56 @@ export function watchTx(txHash) {
 }
 
 async function runloop() {
+  console.log("handle loop tick");
+  
   try {
     let toBeRemoved = [];
     for (let i = 0; i < context.watchList.length; i++) {
       const txHash = context.watchList[i];
       const tx = await context.web3.eth.getTransaction(txHash);
+      console.log(txHash, " status:\n", tx);
+      
       if (tx.blockNumber != null) {
+        console.log(txHash," mined");
+        
         toBeRemoved.push(txHash);
         context.callback(txHash);
       }
     }
 
     if (toBeRemoved.length > 0) {
-      context.watchList = context.watchList.filter((e) => {
-        return toBeRemoved.indexOf(e) >= 0;
-      });
+      console.log("to remove watch list: ", toBeRemoved);
+      
+      context.watchList = context.watchList.filter(e => toBeRemoved.indexOf(e) < 0);
     }
 
     if (context.watchList.length == 0) {
+      console.log("no more tx to watch");
+      
       stop();
     }
   } catch (error) {
-    console.log(error);
+    console.log("Faied: ", error);
   }
 }
 
 export function start(account) {
-  context.isRunning = true;
+  console.log("start watch loop");
+  
   context.account = account;
 
   if (context.isRunning) {
     stop();
   }
   
-  runloop();
+  context.isRunning = true;
+  
   context.interval = setInterval(runloop, 10000);
 }
 
 export function stop() {
+  console.log("stop watch loop");
+  
   clearInterval(context.interval);
   context.isRunning = false;
 }
