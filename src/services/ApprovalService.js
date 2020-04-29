@@ -5,6 +5,7 @@ import * as TokenService from './TokenService.js';
 import hash from 'object-hash';
 import Big from 'big.js';
 import * as QueueService from './QueueService.js';
+import * as Web3Runloop from './Web3Runloop.js';
 
 var web3 = null;
 export const UNLIMITED_ALLOWANCE = new Big("115792089237316195423570985008687907853269984665640564039457584007913129639935");
@@ -22,11 +23,15 @@ export const MAX_ALLOWANCE = UNLIMITED_ALLOWANCE.div('1e10');
 
 export function initService(web3Instance) {
   web3 = web3Instance;
+  Web3Runloop.initService(web3Instance);
 }
 
 const Task = (token, owner, platform, tokenInfo) => getApproval(token, owner, platform, tokenInfo);
 
 export async function fetchAccountApprovals(account) {
+  
+  Web3Runloop.start(account);
+
   const tokens =  TokenService.tokens;
   const platforms = PlatformService.platforms;
 
@@ -135,11 +140,3 @@ export async function updateApproval(approval, newAllowance) {
   }
 }
 
-// /**
-//  * Fetch account's approved platforms
-//  * @param {string} account - account's address
-//  * @returns {import('./PlatformService.js').Platform[]}
-//  */
-// export function fetchAccountApprovedPlatforms(account) {
-  
-// }

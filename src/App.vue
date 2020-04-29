@@ -61,6 +61,8 @@ export default {
     async onMetaMaskLoadComplete(data) {
       let account = data.metaMaskAddress;
       let web3 = new Web3(data.web3.currentProvider);
+      console.log(data.web3.providers);
+      
 
       this.$store.web3 = web3;
       this.$store.account.address = account;
