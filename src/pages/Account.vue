@@ -2,7 +2,7 @@
   <div class="align-left">
     <h2>ACCOUNT</h2>
     <div class="card-container corners card-size relative-position border">
-      <h3 v-if="0 != address.length">{{ address }}</h3>
+      <h3 v-if="0 != address.length">{{ displayAddress }}</h3>
       <h3 v-else>Need to connect to MetaMask</h3>
       <hr class="line border"/>
       <div class="align-left">
@@ -18,9 +18,16 @@
 </template>
 
 <script>
+import { truncate } from '@/utils/StringHelper.js';
+
 export default {
   name: 'BaseCard',
   props: ['address', 'approvalCount', 'platformCount'],
+  computed: {
+    displayAddress: function() {
+      return truncate(this.address, 13, 12, 3);
+    }
+  }
 }
 </script>
 

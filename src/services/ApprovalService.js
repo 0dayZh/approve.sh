@@ -24,15 +24,13 @@ export function initService(web3Instance) {
   web3 = web3Instance;
 }
 
-const Task = (token, owner, platform, tokenInfo) => result => {
-  return getApproval(token, owner, platform, tokenInfo);
-};
+const Task = (token, owner, platform, tokenInfo) => getApproval(token, owner, platform, tokenInfo);
 
 export async function fetchAccountApprovals(account) {
   const tokens =  TokenService.tokens;
   const platforms = PlatformService.platforms;
 
-  var tasks = [];
+  let tasks = [];
   
   for (let i = 0; i < tokens.length; i++) {
     let tokenInfo = tokens[i];
@@ -52,58 +50,48 @@ export async function fetchAccountApprovals(account) {
   return approvals;
 }
 
-export async function getApproval(token, owner, platform, tokenInfo) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let allowance = await getTokenAllowance(token, owner, platform.address);
-      if (allowance != "0") {
-        let balance = await getTokenBalance(token, owner);
+export async function getApproval(token, owner, platformInfo, tokenInfo) {
+  try {
+    let allowance = await getTokenAllowance(token, owner, platformInfo.address);
     
-        let approval = {
-          owner: owner,
-          platform: platform,
-          token: tokenInfo,
-          balance: new Big(balance),
-          allowance: new Big(allowance),
-          key: ""
-        };
-        approval.key = hash(`${owner}:${tokenInfo.address}:${platform.address}`);
-        
-        resolve(approval);
-      } else {
-        reject("No approval");
-      }
-    } catch (error) {
-      reject(error);
+    if (allowance != "0") {
+      let balance = await getTokenBalance(token, owner);
+      
+      let approval = {
+        owner: owner,
+        platform: platformInfo,
+        token: tokenInfo,
+        balance: new Big(balance),
+        allowance: new Big(allowance),
+        key: ""
+      };
+      approval.key = hash(`${owner}:${tokenInfo.address}:${platformInfo.address}`);
+      
+      return approval;
+    } else {
+      throw new Error("No approval");
     }
-  });  
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function getTokenAllowance(token, owner, spender) {
-  return new Promise((resolve, reject) => {
-    token.methods.allowance(owner, spender).call()
-      .then(result => {
-        resolve(result);
-      })
-      // FIXME: solve error message
-      .catch(error => {
-        console.log('Failed: ', error.message)
-        reject(error);
-      });
-  });
+  try {
+    let allowance = await token.methods.allowance(owner, spender).call();
+    return allowance;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function getTokenBalance(token, owner) {
-  return new Promise((resolve, reject) =>  {
-    token.methods.balanceOf(owner).call()
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => {
-        console.log('Failed: ', error.message);
-        reject(error);
-      })
-  });
+  try {
+    let balance = await token.methods.balanceOf(owner).call()
+    return balance;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 /**
@@ -139,16 +127,12 @@ export async function updateApproval(approval, newAllowance) {
   let spender = approval.platform.address;
   let amount = newAllowance.toString();
 
-  return new Promise((resolve, reject) =>  {
-    ERC20token.methods.approve(spender, amount).send({from: approval.owner})
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => {
-        reject(error);
-        console.log('Failed: ', error.message);
-      })
-  });
+  try {
+    let result = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 // /**

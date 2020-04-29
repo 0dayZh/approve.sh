@@ -82,7 +82,7 @@ export default {
       return ApprovalService.displayBalance(this.approval);
     },
     percent() {
-      let percentNumber = this.approval.balance.div(this.approval.allowance);
+      let percentNumber = this.approval.balance.div(this.approval.allowance).times(100);
       return percentNumber.toFixed(2).toString();
     }
   },
