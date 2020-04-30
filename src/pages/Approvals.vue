@@ -13,7 +13,6 @@
 
 <script>
 import ApprovalCard from '@/components/ApprovalCard.vue'
-// import Big from 'big.js';
 
 export default {
   name: 'Approvals',

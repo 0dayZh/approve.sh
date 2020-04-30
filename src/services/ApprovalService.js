@@ -113,7 +113,7 @@ export async function getTokenBalance(token, owner) {
  * @returns {import('./PlatformService.js').Platform[]}
  */
 export function fetchAllPlatforms() {
-  return PlatformService.patforms;
+  return PlatformService.platforms;
 }
 
 export function isApprovalInDanger(approval) {
@@ -140,32 +140,28 @@ export async function updateApproval(approval, newAllowance, callback1, callback
   let ERC20token = new web3.eth.Contract(require(`@/abi/ERC20.json`), approval.token.address);
   let spender = approval.platform.address;
   let amount = newAllowance.toString();
+  
+  let tx = await ERC20token.methods.approve(spender, amount).send({from: approval.owner}, function(error, transactionHash) {
+    if (!error) {
+      console.log("tx1: ", transactionHash);
+      callback1(transactionHash);
+    } else {
+      console.log(error);
+    }
+  });
 
-  try {
-    let tx = await ERC20token.methods.approve(spender, amount).send({from: approval.owner}, function(error, transactionHash) {
-      if (!error) {
-        console.log("tx1: ", transactionHash);
-        callback1(transactionHash);
-      } else {
-        console.log(error);
-      }
-    });
-    // const transactionHash = "0xfef98a3395bd81366e0fbab6637c37fc82f900e883924794f950c4bebb766a92"; 
-    const transactionHash = tx.transactionHash;
-    console.log("tx2: ", transactionHash);
+  const transactionHash = tx.transactionHash;
+  console.log("tx2: ", transactionHash);
 
-    pendingApprovals[transactionHash] = {
-      approval: approval,
-      newAllowance: newAllowance
-    };
+  pendingApprovals[transactionHash] = {
+    approval: approval,
+    newAllowance: newAllowance
+  };
 
-    callbackFns[transactionHash] = callback2;
-    Web3Runloop.watchTx(transactionHash);
+  callbackFns[transactionHash] = callback2;
+  Web3Runloop.watchTx(transactionHash);
 
-    return transactionHash;
-  } catch (error) {
-    throw error;
-  }
+  return transactionHash;
 }
 
 export function numberOfPlatforms(approvals) {

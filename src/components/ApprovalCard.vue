@@ -51,7 +51,6 @@ import FlipCard from '@/components/ui/FlipCard.vue'
 import * as ApprovalService from '@/services/ApprovalService.js'
 import Big from 'big.js';
 import { truncate } from '@/utils/StringHelper.js';
-import { log } from 'util';
 
 export default {
   name: 'ApprovalCard',
