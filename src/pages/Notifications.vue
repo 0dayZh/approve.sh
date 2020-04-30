@@ -6,8 +6,6 @@
 </template>
 
 <script>
-import { truncate } from '@/utils/StringHelper.js';
-
 export default {
   name: 'Notifications',
 }
