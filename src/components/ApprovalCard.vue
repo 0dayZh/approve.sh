@@ -16,7 +16,7 @@
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
           v-bind:editing=false
           v-bind:isWarning="isWarning"
-          v-bind:placeholder="displayAllownace"
+          placeholder=""
           @editButtonPressed="editButtonPressed"
         ></BaseCard>
       </template>
@@ -33,7 +33,7 @@
           v-bind:usingDefautlBottomView="usingDefautlBottomView"
           v-bind:editing=true
           v-bind:isWarning="isWarning"
-          v-bind:placeholder="displayAllownace"
+          placeholder=""
           @editButtonPressed="editButtonPressed"
           @doneButtonPressed="doneButtonPressed"
           @declineButtonPressed="declineButtonPressed"
@@ -48,6 +48,7 @@ import BaseCard from '@/components/ui/BaseCard.vue'
 import FlipCard from '@/components/ui/FlipCard.vue'
 import * as ApprovalService from '@/services/ApprovalService.js'
 import Big from 'big.js';
+import { truncate } from '@/utils/StringHelper.js';
 
 export default {
   name: 'ApprovalCard',
@@ -83,41 +84,47 @@ export default {
     percent() {
       let percentNumber = this.approval.balance.div(this.approval.allowance).times(100);
       return percentNumber.toFixed(2).toString();
+    },
+    displayTx: function() {
+      return truncate(this.txHash, 14, 14, 3);
     }
   },
   methods: {
     editButtonPressed: function() {
       this.flipped = !this.flipped;
     },
-    doneButtonPressed: async function(newAllowance) {
+    updateApproval: async function(newAllowance)  {
       let allowance = new Big(newAllowance);
       let scaledAllowance = allowance.times(new Big(`1e${this.approval.token.decimals}`));
 
       this.txHash = await ApprovalService.updateApproval(this.approval, scaledAllowance, this.txCompleted);
-      this.flash("🚀 <span class='approve-font'>Approving</span><br/>\
-                tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'info');
+      const url = `https://etherscan.io/tx/${this.txHash}`;
+      this.flash(`🚀 <span class='approve-font'>Approving</span><br/>\
+                tx: <a href=${url} target='_blank'>${this.displayTx}</a>`, 'info');
       this.flipped = !this.flipped;
     },
+    doneButtonPressed: function(newAllowance) {
+      this.updateApproval(newAllowance);
+    },
     declineButtonPressed: async function() {
-      this.txHash = await ApprovalService.updateApproval(this.approval, new Big(0), this.txCompleted);
-      this.flash("🚀 <span class='approve-font'>Approving</span><br/>\
-                tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'info');
-      this.flipped = !this.flipped;
+      this.updateApproval(0);
     },
     txCompleted: function(txHash, result, success) {
       if (success) {
         if (this.txHash == txHash) {
+          const url = `https://etherscan.io/tx/${this.txHash}`;
+          this.flash(`👏 <span class='approve-font'>Approved</span><br/>\
+                  tx: <a href=${url} target='_blank'>${this.displayTx}</a>`, 'success');
           this.txHash = "";
-          this.flash("🚀 <span class='approve-font'>Approved</span><br/>\
-                  tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'success');
         } else {
           console.log("Unhanded: ", txHash);
           this.txHash = "";
         }
       } else {
         this.txHash = "";
-        this.flash("👀 <span class='approve-font'>Error</span><br/>\
-                  tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'error');
+        const url = `https://etherscan.io/tx/${this.txHash}`;
+        this.flash(`👀 <span class='approve-font'>Error</span><br/>\
+                  tx: <a href=${url} target='_blank'>${this.displayTx}</a>`, 'error');
       }
     }
   },

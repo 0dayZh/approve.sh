@@ -136,8 +136,8 @@ export async function updateApproval(approval, newAllowance, callback) {
   let amount = newAllowance.toString();
 
   try {
-    let tx = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
-    const transactionHash = tx.transactionHash;
+    // let tx = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
+    const transactionHash = "0xfef98a3395bd81366e0fbab6637c37fc82f900e883924794f950c4bebb766a92"; //tx.transactionHash;
     console.log("tx: ", transactionHash);
 
     callbackFns[transactionHash] = callback;
