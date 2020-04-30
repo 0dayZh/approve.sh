@@ -5,6 +5,7 @@
     >
       <template slot="front">
         <BaseCard
+          v-bind:isLoading="isLoading"
           v-bind:backgroundColor="backgroundColor"
           v-bind:borderColor="borderColor"
           v-bind:platform="approval.platform.logo"
@@ -22,6 +23,7 @@
       </template>
       <template  slot="back">
         <BaseCard
+          v-bind:isLoading="isLoading"
           v-bind:backgroundColor="backgroundColor"
           v-bind:borderColor="borderColor"
           v-bind:platform="approval.platform.logo"
@@ -49,6 +51,7 @@ import FlipCard from '@/components/ui/FlipCard.vue'
 import * as ApprovalService from '@/services/ApprovalService.js'
 import Big from 'big.js';
 import { truncate } from '@/utils/StringHelper.js';
+import { log } from 'util';
 
 export default {
   name: 'ApprovalCard',
@@ -60,9 +63,6 @@ export default {
     'approval': {}
   },
   computed: {
-    isWaiting() {
-      return this.txHash.length != 0;
-    },
     isWarning() {
       return ApprovalService.isApprovalInDanger(this.approval);
     },
@@ -93,45 +93,65 @@ export default {
     editButtonPressed: function() {
       this.flipped = !this.flipped;
     },
+    handleApproval: function(newAllowance)  {
+      this.updateApproval(newAllowance);
+      this.isLoading = true;
+      this.flipped = !this.flipped;
+    },
     updateApproval: async function(newAllowance)  {
       let allowance = new Big(newAllowance);
       let scaledAllowance = allowance.times(new Big(`1e${this.approval.token.decimals}`));
+      try {
+        let vm = this;
+        await ApprovalService.updateApproval(this.approval, scaledAllowance, function(txHash) {
+          console.log("got: ", txHash);
+          
+          vm.txHash = txHash;
+          const url = `https://etherscan.io/tx/${vm.txHash}`;
+          vm.flash(`🚀 <span class='approve-font'>Approving</span><br/>\
+                    tx: <a href=${url} target='_blank'>${vm.displayTx}</a>`, 'info');
+        }, 
+        this.txCompleted);
+      } catch (error) {
+        console.log(error);
+        if (error.code == 4001) {
+          this.flash("🙅 <span class='approve-font'>Rejected</span> 🙅‍♂️<br/>You just denied the transaction signature.", 'info');
+        }
 
-      this.txHash = await ApprovalService.updateApproval(this.approval, scaledAllowance, this.txCompleted);
-      const url = `https://etherscan.io/tx/${this.txHash}`;
-      this.flash(`🚀 <span class='approve-font'>Approving</span><br/>\
-                tx: <a href=${url} target='_blank'>${this.displayTx}</a>`, 'info');
-      this.flipped = !this.flipped;
+        this.txHash = "";
+        this.isLoading = false;
+      }
     },
     doneButtonPressed: function(newAllowance) {
-      this.updateApproval(newAllowance);
+      this.handleApproval(newAllowance);
     },
     declineButtonPressed: async function() {
-      this.updateApproval(0);
+      this.handleApproval(0);
     },
     txCompleted: function(txHash, result, success) {
       if (success) {
         if (this.txHash == txHash) {
           const url = `https://etherscan.io/tx/${this.txHash}`;
-          this.flash(`👏 <span class='approve-font'>Approved</span><br/>\
+          this.flash(`👏 <span class='approve-font'>Done</span><br/>\
                   tx: <a href=${url} target='_blank'>${this.displayTx}</a>`, 'success');
-          this.txHash = "";
         } else {
           console.log("Unhanded: ", txHash);
-          this.txHash = "";
         }
       } else {
-        this.txHash = "";
         const url = `https://etherscan.io/tx/${this.txHash}`;
         this.flash(`👀 <span class='approve-font'>Error</span><br/>\
                   tx: <a href=${url} target='_blank'>${this.displayTx}</a>`, 'error');
       }
+
+      this.txHash = "";
+      this.isLoading = false;
     }
   },
   data: function() {
     return {
       txHash: "",
-      flipped: false
+      flipped: false,
+      isLoading: false
     };
   }
 }

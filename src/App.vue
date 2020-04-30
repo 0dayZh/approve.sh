@@ -45,7 +45,6 @@ import VueMetamask from 'vue-metamask';
 import * as ApprovalService from '@/services/ApprovalService.js';
 import Web3 from 'web3';
 import { RotateSquare } from 'vue-loading-spinner';
-require('vue-flash-message/dist/vue-flash-message.min.css');
 
 export default {
   name: 'App',
@@ -93,14 +92,14 @@ export default {
           this.flash(`🔥<span class='approve-font'>WARNING</span>🔥<br/>There are ${dangerCount} approvals having unlimited allownace.`, 'warning');
         }
       }
-      
+
       this.approvalCount = approvals.length;
       this.platformCount = ApprovalService.numberOfPlatforms(approvals);
       this.$store.approvals = approvals;
     },
   },
   mounted() {
-    this.flash("<span class='approve-font'>Welcome to Approve<span class='tint-color'>.</span>sh</span>. 🎉<br/>\
+    this.flash("🎉 <span class='approve-font'>Welcome to Approve<span class='tint-color'>.</span>sh</span>.<br/>\
               Learn more about <a href='https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md#approve' target='_blank'>ERC20 approve</a>,<br/>\
               and the <a href='https://www.coindesk.com/long-festering-defi-dapp-bug-still-not-fixed-by-industry' target='_blank'>Open Security Issue</a>.", 'info', {
         important: true

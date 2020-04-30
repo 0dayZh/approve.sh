@@ -25,7 +25,7 @@ export function watchTx(txHash) {
   }
 }
 
-let counter = 0;
+// let counter = 0;
 
 async function runloop() {
   console.log("handle loop tick");
@@ -34,9 +34,10 @@ async function runloop() {
     for (let i = 0; i < context.watchList.length; i++) {
       const txHash = context.watchList[i];
       try {
-        const tx = {
-          blockNumber: counter++ > 2 ? 233 : null
-        }; // await context.web3.eth.getTransaction(txHash);
+        // const tx = {
+        //   blockNumber: counter++ > 2 ? 233 : null
+        // }; 
+        const tx = await context.web3.eth.getTransaction(txHash);
         console.log(txHash, " status:\n", tx);
         
         if (tx.blockNumber != null) {
@@ -78,7 +79,7 @@ export function start(account) {
 }
 
 export function stop() {
-  counter = 0;
+  // counter = 0;
   console.log("stop watch loop");
   
   clearInterval(context.interval);

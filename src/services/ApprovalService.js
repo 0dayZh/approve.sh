@@ -7,9 +7,6 @@ import Big from 'big.js';
 import * as QueueService from './QueueService.js';
 import * as Web3Runloop from './Web3Runloop.js';
 
-let web3 = null;
-let callbackFns = {};
-
 export const UNLIMITED_ALLOWANCE = new Big("115792089237316195423570985008687907853269984665640564039457584007913129639935");
 export const MAX_ALLOWANCE = UNLIMITED_ALLOWANCE.div('1e10');
 
@@ -23,12 +20,21 @@ export const MAX_ALLOWANCE = UNLIMITED_ALLOWANCE.div('1e10');
  * @property {string} key - key to approval
  */
 
+let web3 = null;
+let callbackFns = {};
+let pendingApprovals = {};
+
 export function initService(web3Instance) {
   web3 = web3Instance;
   Web3Runloop.initService(web3Instance, runloopCallback);
 }
 
 async function runloopCallback(txHash, result, sucess) {
+  if (sucess) {
+    pendingApprovals[txHash].approval.allowance = pendingApprovals[txHash].newAllowance;
+  }
+  pendingApprovals[txHash] = null;
+  
   callbackFns[txHash](txHash, result, sucess);
 }
 
@@ -130,22 +136,35 @@ export function displayBalance(approval) {
   return balance.toFixed().toString();
 }
 
-export async function updateApproval(approval, newAllowance, callback) {
+export async function updateApproval(approval, newAllowance, callback1, callback2) {
   let ERC20token = new web3.eth.Contract(require(`@/abi/ERC20.json`), approval.token.address);
   let spender = approval.platform.address;
   let amount = newAllowance.toString();
 
   try {
-    // let tx = await ERC20token.methods.approve(spender, amount).send({from: approval.owner});
-    const transactionHash = "0xfef98a3395bd81366e0fbab6637c37fc82f900e883924794f950c4bebb766a92"; //tx.transactionHash;
-    console.log("tx: ", transactionHash);
+    let tx = await ERC20token.methods.approve(spender, amount).send({from: approval.owner}, function(error, transactionHash) {
+      if (!error) {
+        console.log("tx1: ", transactionHash);
+        callback1(transactionHash);
+      } else {
+        console.log(error);
+      }
+    });
+    // const transactionHash = "0xfef98a3395bd81366e0fbab6637c37fc82f900e883924794f950c4bebb766a92"; 
+    const transactionHash = tx.transactionHash;
+    console.log("tx2: ", transactionHash);
 
-    callbackFns[transactionHash] = callback;
+    pendingApprovals[transactionHash] = {
+      approval: approval,
+      newAllowance: newAllowance
+    };
+
+    callbackFns[transactionHash] = callback2;
     Web3Runloop.watchTx(transactionHash);
 
     return transactionHash;
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 }
 

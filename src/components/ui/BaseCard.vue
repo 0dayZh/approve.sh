@@ -1,5 +1,14 @@
 <template>
   <div class="container corners card-size relative-position" :style="style">
+    <loading 
+      v-bind:active.sync="isLoading" 
+      v-bind:isFullPage="isFullPage"
+      color="#EB39DC"
+      v-bind:width="40"
+      v-bind:height="40"
+      backgroundColor="#000"
+      v-bind:opacity="0.233">
+    </loading>
 
     <!-- Header: Platform logo -->
     <div class="align-left flex">
@@ -64,9 +73,15 @@
 </template>
 
 <script>
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
 export default {
   name: 'BaseCard',
-  props: ['backgroundColor', 'borderColor', 'platform', 'allowance', 'percent', 'balance', 'tokenName', 'tokenSymbol', 'editing', 'isWarning', 'placeholder'],
+  props: ['isLoading', 'backgroundColor', 'borderColor', 'platform', 'allowance', 'percent', 'balance', 'tokenName', 'tokenSymbol', 'editing', 'isWarning', 'placeholder'],
+  components: {
+    Loading
+  },
   computed: {
     style() {
       return {
@@ -78,6 +93,9 @@ export default {
       return {
         border: '1px solid ' + this.borderColor
       };
+    },
+    isFullPage() {
+      return false;
     }
   },
   data: function() {
