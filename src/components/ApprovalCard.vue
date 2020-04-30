@@ -87,33 +87,37 @@ export default {
   },
   methods: {
     editButtonPressed: function() {
-      this.flash('Edit button pressed.', 'info', {
-        timeout: 3000
-      });
       this.flipped = !this.flipped;
     },
     doneButtonPressed: async function(newAllowance) {
-      this.flash('Done button pressed.', 'info', {
-        timeout: 3000
-      });
-
       let allowance = new Big(newAllowance);
       let scaledAllowance = allowance.times(new Big(`1e${this.approval.token.decimals}`));
 
       this.txHash = await ApprovalService.updateApproval(this.approval, scaledAllowance, this.txCompleted);
+      this.flash("🚀 <span class='approve-font'>Approving</span><br/>\
+                tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'info');
+      this.flipped = !this.flipped;
     },
     declineButtonPressed: async function() {
-      this.flash('decline button pressed.', 'info', {
-        timeout: 3000
-      });
-
       this.txHash = await ApprovalService.updateApproval(this.approval, new Big(0), this.txCompleted);
+      this.flash("🚀 <span class='approve-font'>Approving</span><br/>\
+                tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'info');
+      this.flipped = !this.flipped;
     },
-    txCompleted: function(txHash) {
-      if (this.txHash == txHash) {
-        this.txHash = "";
+    txCompleted: function(txHash, result, success) {
+      if (success) {
+        if (this.txHash == txHash) {
+          this.txHash = "";
+          this.flash("🚀 <span class='approve-font'>Approved</span><br/>\
+                  tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'success');
+        } else {
+          console.log("Unhanded: ", txHash);
+          this.txHash = "";
+        }
       } else {
-        console.log("Unhanded: ", txHash);
+        this.txHash = "";
+        this.flash("👀 <span class='approve-font'>Error</span><br/>\
+                  tx: <a href=`https://etherscan.io/address/${this.txHash}` target='_blank'>${this.txHash}</a>", 'error');
       }
     }
   },

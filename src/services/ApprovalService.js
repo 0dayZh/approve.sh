@@ -28,8 +28,8 @@ export function initService(web3Instance) {
   Web3Runloop.initService(web3Instance, runloopCallback);
 }
 
-async function runloopCallback(txHash) {
-  callbackFns[txHash](txHash);
+async function runloopCallback(txHash, result, sucess) {
+  callbackFns[txHash](txHash, result, sucess);
 }
 
 const Task = (token, owner, platform, tokenInfo) => getApproval(token, owner, platform, tokenInfo);

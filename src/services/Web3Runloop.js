@@ -28,18 +28,21 @@ export function watchTx(txHash) {
 async function runloop() {
   console.log("handle loop tick");
   
-  try {
-    let toBeRemoved = [];
+  let toBeRemoved = [];
     for (let i = 0; i < context.watchList.length; i++) {
       const txHash = context.watchList[i];
-      const tx = await context.web3.eth.getTransaction(txHash);
-      console.log(txHash, " status:\n", tx);
-      
-      if (tx.blockNumber != null) {
-        console.log(txHash," mined");
+      try {
+        const tx = await context.web3.eth.getTransaction(txHash);
+        console.log(txHash, " status:\n", tx);
         
-        toBeRemoved.push(txHash);
-        context.callback(txHash);
+        if (tx.blockNumber != null) {
+          console.log(txHash," mined");
+          
+          toBeRemoved.push(txHash);
+          context.callback(txHash, txHash, true);
+        }
+      } catch (error) {
+        context.callback(txHash, error, false);
       }
     }
 
@@ -54,9 +57,6 @@ async function runloop() {
       
       stop();
     }
-  } catch (error) {
-    console.log("Faied: ", error);
-  }
 }
 
 export function start(account) {
