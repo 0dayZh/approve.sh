@@ -16,7 +16,7 @@ git init
 git add -A
 git commit -m 'deploy'
 
-if you are deploying to https://0dayzh.github.io/approve.sh
+# if you are deploying to https://0dayzh.github.io/approve.sh
 git push -f git@github.com:0dayzh/approve.sh.git master:gh-pages
 
 cd -
