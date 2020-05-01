@@ -10,7 +10,7 @@ npm run build
 cd dist
 
 # if you are deploying to a custom domain
-echo 'www.approve.sh' > CNAME
+echo 'approve.sh' > CNAME
 
 git init
 git add -A
