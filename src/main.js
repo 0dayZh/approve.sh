@@ -16,8 +16,7 @@ const shared = Vue.observable({
     address: "",
   },
   approvals: [],
-  web3: null,
-  debug: true
+  web3: null
 })
 
 shared.install = function(){

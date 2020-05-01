@@ -1,4 +1,4 @@
 // vue.config.js
 module.exports = {
-  publicPath: '/approve.sh/'
+  // publicPath: '/approve.sh/'
 }
