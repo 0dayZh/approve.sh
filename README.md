@@ -1,24 +1,16 @@
-# approve-sh
+# Approve.sh
 
-## Project setup
-```
-npm install
-```
+# Platform
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- [x] Oasis DEX
+- [x] Lendf.ME Liquidator
+- [x] Lendf.ME Lending
+- [x] Tokenlon DEX
+- [x] DyDx DEX
+- [ ] Compound Lending
+- [ ] Aave Lending
+- [ ] DyDx Lending
+- [ ] Kyber DEX
+- [ ] Loopring DEX
+- [ ] Set Assets
+- [ ] bZx Lending
