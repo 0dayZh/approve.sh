@@ -156,7 +156,10 @@ a {
   grid-area: header; 
   text-align: left;
 }
-.approvals { grid-area: approvals }
+.approvals { 
+  grid-area: approvals;
+  min-height: calc(100vh - 390px);
+}
 .account { grid-area: account }
 .notification { grid-area: notification }
 .footer {
