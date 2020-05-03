@@ -33,6 +33,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+h2 {
+  font-size: 18px;
+  color: black;
+}
+p {
+  font-size: 21px;
+  color: #5C5C5C;
+}
 .align-left {
   text-align: left;
 }
