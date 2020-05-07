@@ -28,10 +28,14 @@ export const platforms = [
     name: "Tokenlon DEX",
     logo: "tokenlon-dex"
   },
-  
   {
     address: "0x1e0447b19bb6ecfdae1e4ae1694b0c3659614e4e",
     name: "DyDx DEX",
     logo: "dydx-dex"
+  },
+  {
+    address: "0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E",
+    name: "Compound Lending",
+    logo: "compound-lending"
   }
 ];
