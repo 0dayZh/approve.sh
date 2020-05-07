@@ -8,7 +8,7 @@ import * as QueueService from './QueueService.js';
 import * as Web3Runloop from './Web3Runloop.js';
 
 export const UNLIMITED_ALLOWANCE = new Big("115792089237316195423570985008687907853269984665640564039457584007913129639935");
-export const MAX_ALLOWANCE = UNLIMITED_ALLOWANCE.div('1e10');
+export const MAX_ALLOWANCE = new Big("1e26");
 
 /**
  * @typedef Approval
