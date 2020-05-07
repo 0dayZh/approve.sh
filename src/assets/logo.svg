@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="275px" height="48px" viewBox="0 0 275 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="286px" height="63px" viewBox="0 0 286 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>logo</title>
-    <g id="Web" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="HD-Main" transform="translate(-207.000000, -39.000000)">
-            <g id="logo" transform="translate(207.000000, 35.000000)">
-                <rect id="矩形" fill="#000000" x="0" y="4" width="30" height="48"></rect>
-                <text id="Approve.sh" font-family="Swiggity" font-size="48" font-weight="normal" letter-spacing="5">
-                    <tspan x="4" y="50" fill="#FFFFFF">A</tspan>
-                    <tspan x="33" y="50" fill="#000000">pprove</tspan>
-                    <tspan x="207" y="50" fill="#EB39DC">.</tspan>
-                    <tspan x="223.988281" y="50" fill="#000000">sh</tspan>
+    <g id="Web" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" font-family="AmericanText, American Text" font-size="60" font-weight="normal" letter-spacing="6.25">
+        <g id="HD-Main" transform="translate(-211.000000, -40.000000)">
+            <g id="编组-6" transform="translate(210.000000, 26.000000)">
+                <text id="logo">
+                    <tspan x="0" y="64" fill="#000000">Approve</tspan>
+                    <tspan x="215.83" y="64" fill="#EB39DC">.</tspan>
+                    <tspan x="236.66" y="64" fill="#000000">sh</tspan>
                 </text>
             </g>
         </g>
