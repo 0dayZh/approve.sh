@@ -37,5 +37,10 @@ export const platforms = [
     address: "0x6C8c6b02E7b2BE14d4fA6022Dfd6d75921D90E4E",
     name: "Compound Lending",
     logo: "compound-lending"
+  },
+  {
+    address: "0x3dfd23a6c5e8bbcfc9581d2e864a68feb6a076d3",
+    name: "AAVE Lending",
+    logo: "aave-lending"
   }
 ];
