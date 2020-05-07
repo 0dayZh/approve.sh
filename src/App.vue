@@ -1,7 +1,6 @@
 <template>
   <div id="app" class="grid-container">
     <div class="header">
-      <!-- <h1 class="header">Approve<span class="tint-color">.</span>sh</h1> -->
       <img src="@/assets/logo.svg"/>
     </div>
 
