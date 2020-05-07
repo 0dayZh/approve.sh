@@ -1,7 +1,8 @@
 <template>
   <div id="app" class="grid-container">
     <div class="header">
-      <h1 class="header">Approve<span class="tint-color">.</span>sh</h1>
+      <!-- <h1 class="header">Approve<span class="tint-color">.</span>sh</h1> -->
+      <img src="@/assets/logo.svg"/>
     </div>
 
     <div v-if="hasAccount" class="approvals">
@@ -179,7 +180,7 @@ a {
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 670px 60px 300px 1fr;
-  grid-template-rows: 100px 310px 1fr 200px;
+  grid-template-rows: 60px 310px 1fr 200px;
   grid-template-areas:
     '. header header header .'
     '. approvals . account .'
