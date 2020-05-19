@@ -67,6 +67,9 @@ export default {
     }
   },
   methods: {
+    track () {
+      this.$ga.page('/')
+    },
     async onMetaMaskLoadComplete(data) {
       let account = data.metaMaskAddress;
       let web3 = new Web3(data.web3.currentProvider);      

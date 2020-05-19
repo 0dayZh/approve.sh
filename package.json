@@ -13,6 +13,7 @@
     "ethereum-input-data-decoder": "^0.3.0",
     "object-hash": "^2.0.3",
     "vue": "^2.6.11",
+    "vue-analytics": "^5.22.1",
     "vue-flash-message": "^0.7.2",
     "vue-loading-overlay": "^3.3.2",
     "vue-loading-spinner": "^1.0.11",
