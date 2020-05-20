@@ -3,7 +3,7 @@ import App from './App.vue';
 import VueFlashMessage from 'vue-flash-message';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
-import VueAnalytics from 'vue-analytics';
+import VueGtag from "vue-gtag";
 require('vue-flash-message/dist/vue-flash-message.min.css');
 
 
@@ -29,9 +29,9 @@ shared.install = function(){
 Vue.use(shared);
 Vue.use(VueFlashMessage);
 Vue.use(Loading);
-Vue.use(VueAnalytics, {
-  id: 'UA-167128867-1'
-})
+Vue.use(VueGtag,{
+  config: { id: "UA-167128867-1" }
+});
 
 /**
  * Mount App
